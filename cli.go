@@ -8,10 +8,11 @@ import (
 )
 
 var waitFlag bool
+var curDir string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gork [-w] command args...",
+	Use:   "gork [-w] [-C cwd] command args...",
 	Short: "`fork` written in go",
 	Long: `gork spawns and disowns any process passed to it as subcommand.
 It frees the user from unnecessary hassle like "&!" in linux shells.
@@ -22,8 +23,15 @@ $ gork google-chrome github.com
 directly launches chrome and opens github in a new window`,
 	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		subcmd := exec.Command(args[0], args[1:]...)
 		var err error
+		if curDir != "." {
+			err = os.Chdir(curDir)
+			if err != nil {
+				cmd.PrintErrln(err)
+				return
+			}
+		}
+		subcmd := exec.Command(args[0], args[1:]...)
 		err = subcmd.Start()
 		if err != nil {
 			cmd.PrintErrln(err)
@@ -39,7 +47,7 @@ directly launches chrome and opens github in a new window`,
 	},
 	DisableFlagsInUseLine: true,
 	SilenceUsage:          true,
-	Version:               "1.1",
+	Version:               "1.3",
 }
 
 // add all child commands to the root command and sets flags appropriately.
@@ -54,5 +62,6 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&waitFlag, "wait", "w", false, "Wait until <command> completes")
+	rootCmd.Flags().StringVarP(&curDir, "dir", "C", ".", "start <command> from `dir` instead pf current directory")
 	rootCmd.Flags().SetInterspersed(false)
 }
