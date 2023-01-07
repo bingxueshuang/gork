@@ -11,7 +11,7 @@ var waitFlag bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gork [-w] -- command args...",
+	Use:   "gork [-w] command args...",
 	Short: "`fork` written in go",
 	Long: `gork spawns and disowns any process passed to it as subcommand.
 It frees the user from unnecessary hassle like "&!" in linux shells.
@@ -39,7 +39,7 @@ directly launches chrome and opens github in a new window`,
 	},
 	DisableFlagsInUseLine: true,
 	SilenceUsage:          true,
-	Version:               "1.0",
+	Version:               "1.1",
 }
 
 // add all child commands to the root command and sets flags appropriately.
@@ -54,4 +54,5 @@ func main() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&waitFlag, "wait", "w", false, "Wait until <command> completes")
+	rootCmd.Flags().SetInterspersed(false)
 }
