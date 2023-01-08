@@ -60,8 +60,20 @@ func main() {
 }
 
 func init() {
-	rootCmd.Flags().BoolVarP(&waitFlag, "wait", "w", false, "Wait until <command> completes")
-	rootCmd.Flags().StringVarP(&curDir, "dir", "C", ".", "start <command> from `dir` instead pf current directory")
+	rootCmd.Flags().BoolVarP(
+		&waitFlag,
+		"wait",
+		"w",
+		false,
+		"Wait until <command> completes",
+	)
+	rootCmd.Flags().StringVarP(
+		&curDir,
+		"dir",
+		"C",
+		".",
+		"start <command> from `dir` instead pf current directory",
+	)
 	rootCmd.Flags().SetInterspersed(false)
 	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
 		return fmt.Errorf("%w\nUsage: %s", err, cmd.UseLine())
