@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -22,32 +23,30 @@ $ gork google-chrome github.com
 
 directly launches chrome and opens github in a new window`,
 	Args: cobra.MinimumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		if curDir != "." {
 			err = os.Chdir(curDir)
 			if err != nil {
-				cmd.PrintErrln(err)
-				return
+				return err
 			}
 		}
 		subcmd := exec.Command(args[0], args[1:]...)
 		err = subcmd.Start()
 		if err != nil {
-			cmd.PrintErrln(err)
-			return
+			return err
 		}
 		if waitFlag {
 			err = subcmd.Wait()
 			if err != nil {
-				cmd.PrintErrln(err)
-				return
+				return err
 			}
 		}
+		return nil
 	},
 	DisableFlagsInUseLine: true,
 	SilenceUsage:          true,
-	Version:               "1.3",
+	Version:               "1.4",
 }
 
 // add all child commands to the root command and sets flags appropriately.
@@ -64,4 +63,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&waitFlag, "wait", "w", false, "Wait until <command> completes")
 	rootCmd.Flags().StringVarP(&curDir, "dir", "C", ".", "start <command> from `dir` instead pf current directory")
 	rootCmd.Flags().SetInterspersed(false)
+	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+		return fmt.Errorf("%w\nUsage: %s", err, cmd.UseLine())
+	})
 }
