@@ -8,7 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// waitFlag is flag that signifies whether process has to spawn subcommand
+// and return immediately or wait till completion of subcommand.
 var waitFlag bool
+
+// curDir is a directory as which subcommand is launched from
 var curDir string
 
 // rootCmd represents the base command when called without any subcommands
