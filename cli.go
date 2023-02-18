@@ -48,7 +48,7 @@ directly launches chrome and opens github in a new window`,
 	},
 	DisableFlagsInUseLine: true,
 	SilenceUsage:          true,
-	Version:               "1.4",
+	Version:               "1.4.2",
 }
 
 // add all child commands to the root command and sets flags appropriately.
