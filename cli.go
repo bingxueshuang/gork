@@ -42,6 +42,8 @@ directly launches chrome and opens github in a new window`,
 				return err
 			}
 		}
+		pid := subcmd.Process.Pid
+		fmt.Println(pid)
 		return nil
 	},
 	DisableFlagsInUseLine: true,
